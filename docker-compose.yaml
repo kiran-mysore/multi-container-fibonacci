@@ -1,0 +1,88 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: dockeruser
+      POSTGRES_PASSWORD: dockerpassword
+      POSTGRES_DB: fibvalues
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dockeruser -d fibvalues"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  apiserver:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      PG_USER: dockeruser
+      PG_HOST: postgres
+      PG_DATABASE: fibvalues
+      PG_PASSWORD: dockerpassword
+      PG_PORT: 5432
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+    environment:
+      - WDS_SOCKET_PORT=80
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+
+  nginx:
+    restart: always
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.dev
+    ports:
+      - "80:80"
+    depends_on:
+      - client
+      - apiserver
+
+  worker:
+    build:
+      context: ./worker
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./worker:/app
+      - /app/node_modules
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      PG_USER: dockeruser
+      PG_HOST: postgres
+      PG_DATABASE: fibvalues
+      PG_PASSWORD: dockerpassword
+      PG_PORT: 5432
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
