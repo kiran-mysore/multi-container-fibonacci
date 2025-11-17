@@ -3,28 +3,28 @@
   "containerDefinitions": [
     {
       "name": "client",
-      "image": "YOUR_DOCKERHUB_USERNAME/complex-fibonacci-client:latest",
+      "image": "kirandockerwhale/complex-fibonacci-client:latest",
       "hostname": "client",
       "essential": false,
       "memory": 128
     },
     {
       "name": "server",
-      "image": "YOUR_DOCKERHUB_USERNAME/complex-fibonacci-server:latest",
-      "hostname": "api",
+      "image": "kirandockerwhale/complex-fibonacci-server:latest",
+      "hostname": "apiserver",
       "essential": false,
       "memory": 128
     },
     {
       "name": "worker",
-      "image": "YOUR_DOCKERHUB_USERNAME/complex-fibonacci-worker:latest",
+      "image": "kirandockerwhale/complex-fibonacci-worker:latest",
       "hostname": "worker",
       "essential": false,
       "memory": 128
     },
     {
       "name": "nginx",
-      "image": "YOUR_DOCKERHUB_USERNAME/complex-fibonacci-nginx:latest",
+      "image": "kirandockerwhale/complex-fibonacci-nginx:latest",
       "hostname": "nginx",
       "essential": true,
       "portMappings": [

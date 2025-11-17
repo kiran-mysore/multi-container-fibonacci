@@ -79,5 +79,7 @@ jobs:
           application_name: complex-fibonacci
           environment_name: complex-fibonacci-env
           version_label: ${{ github.sha }}
-          region: us-east-1
+          region: eu-north-1
+          bucket_name: ${{ secrets.AWS_S3_BUCKET }}
+          bucket_path: deployments/complex-fibonacci
           deployment_package: deploy.zip
