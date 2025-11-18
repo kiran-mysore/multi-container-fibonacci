@@ -1,41 +1,26 @@
-version: '3'
+version: '3.8'
 services:
-  postgres:
-    image: postgres:latest
-    environment:
-      POSTGRES_USER: dockeruser
-      POSTGRES_PASSWORD: dockerpassword
-      POSTGRES_DB: fibvalues
-    mem_limit: 256m
-
-  redis:
-    image: redis:latest
-    mem_limit: 128m
-
   apiserver:
     image: kirandockerwhale/complex-fibonacci-server:latest
     environment:
       REDIS_HOST: ${REDIS_HOST}
       REDIS_PORT: ${REDIS_PORT}
       PG_USER: ${PG_USER}
-      PG_HOST: postgres
+      PG_HOST: ${PG_HOST}
       PG_DATABASE: ${PG_DATABASE}
       PG_PASSWORD: ${PG_PASSWORD}
       PG_PORT: 5432
-    mem_limit: 256m
     depends_on:
       - redis
       - postgres
 
   client:
     image: kirandockerwhale/complex-fibonacci-client:latest
-    mem_limit: 128m
 
   nginx:
     image: kirandockerwhale/complex-fibonacci-nginx:latest
     ports:
       - "80:80"
-    mem_limit: 128m
     depends_on:
       - client
       - apiserver
@@ -43,14 +28,13 @@ services:
   worker:
     image: kirandockerwhale/complex-fibonacci-worker:latest
     environment:
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      PG_USER: dockeruser
-      PG_HOST: postgres
-      PG_DATABASE: fibvalues
-      PG_PASSWORD: dockerpassword
-      PG_PORT: 5432
-    mem_limit: 256m
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      PG_USER: ${PG_USER}
+      PG_HOST: ${PG_HOST}
+      PG_DATABASE: ${PG_DATABASE}
+      PG_PASSWORD: ${PG_PASSWORD}
+      PG_PORT: ${PG_PORT}
     depends_on:
       - redis
       - postgres
