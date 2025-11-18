@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   apiserver:
-    image: kirandockerwhale/complex-fibonacci-server:latest
+    image: kirandockerwhale/complex-fibonacci-server:${IMAGE_TAG}
     environment:
       REDIS_HOST: ${REDIS_HOST}
       REDIS_PORT: ${REDIS_PORT}
@@ -9,17 +9,18 @@ services:
       PG_HOST: ${PG_HOST}
       PG_DATABASE: ${PG_DATABASE}
       PG_PASSWORD: ${PG_PASSWORD}
-      PG_PORT: 5432
+      PG_PORT: ${PG_PORT}
 
   client:
-    image: kirandockerwhale/complex-fibonacci-client:latest
+    image: kirandockerwhale/complex-fibonacci-client:${IMAGE_TAG}
 
   nginx:
-    image: kirandockerwhale/complex-fibonacci-nginx:latest
+    image: kirandockerwhale/complex-fibonacci-nginx:${IMAGE_TAG}
     ports:
       - "80:80"
+
   worker:
-    image: kirandockerwhale/complex-fibonacci-worker:latest
+    image: kirandockerwhale/complex-fibonacci-worker:${IMAGE_TAG}
     environment:
       REDIS_HOST: ${REDIS_HOST}
       REDIS_PORT: ${REDIS_PORT}

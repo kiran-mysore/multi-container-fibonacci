@@ -72,8 +72,15 @@ jobs:
         run: |
           mv docker-compose.aws.yaml docker-compose.yaml
       
+      - name: Replace IMAGE_TAG with commit SHA
+        run: |
+          sed -i "s/\${IMAGE_TAG}/${{ github.sha }}/g" docker-compose.yaml
+      
+      - name: Verify docker-compose content
+        run: cat docker-compose.yaml
+      
       - name: Generate deployment package
-        run: zip -r deploy.zip . -x '*.git*' 'node_modules/*' '*/node_modules/*'
+        run: zip -r deploy.zip docker-compose.yaml
 
       - name: Get timestamp for unique version
         id: timestamp
@@ -89,5 +96,5 @@ jobs:
           version_label: ${{ github.sha }}-${{ steps.timestamp.outputs.timestamp }}
           region: eu-north-1
           deployment_package: deploy.zip
-          use_existing_version_if_available: true
+          use_existing_version_if_available: false
           wait_for_deployment: true
