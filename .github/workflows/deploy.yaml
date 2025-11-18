@@ -70,7 +70,7 @@ jobs:
 
       - name: Rename docker-compose for AWS
         run: |
-          mv docker-compose.aws.yml docker-compose.yml
+          mv docker-compose.aws.yaml docker-compose.yaml
       
       - name: Generate deployment package
         run: zip -r deploy.zip . -x '*.git*' 'node_modules/*' '*/node_modules/*'
